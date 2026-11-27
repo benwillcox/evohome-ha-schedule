@@ -1,6 +1,9 @@
 # Honeywell Evohome Native Controls & Schedule Manager for Home Assistant
 
 Native Home Assistant backend integration and custom Lovelace cards for Honeywell Evohome:
+
+**Designed to replicate the Evohome controller for viewing and editing schedules and temperature setpoints.**
+
 - **Direct controller schedule read/write** (`evohome_schedules.get_schedule` and `evohome_schedules.set_schedule`) across standard and cloned Evohome integrations without duplicating scheduling logic.
 - **Official Evohome temperature color bands** on the 7-day timeline editor (`< 16°C` Blue, `16–18.5°C` Green, `19–21.5°C` Yellow, `22–24.5°C` Orange, `25°C+` Red) with a high-contrast current-time marker.
 - **Header-styled mode & hot water card (`evohome-mode-card`)** with title/status header, mode buttons below, and optimistic UI updates with automatic rollback.
