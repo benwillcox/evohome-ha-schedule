@@ -1,0 +1,200 @@
+# Sample Home Assistant dashboard views using:
+#   - custom:evohome-mode-card
+#   - custom:evohome-zone-card
+#   - custom:evohome-schedule-card
+#
+# Replace entity IDs with your own House and Barn Evohome entities.
+
+views:
+  - title: House Evohome
+    path: house-evohome
+    icon: mdi:home-thermometer
+    type: sections
+    max_columns: 4
+    badges: []
+    sections:
+      - type: grid
+        column_span: 1
+        cards:
+          - type: custom:evohome-mode-card
+            entity: climate.bank_farm
+            title: House Evohome
+            icon: mdi:thermostat-box
+            kind: system
+            system_service_domain: evohome
+            eco_hours: 3
+          - type: custom:evohome-mode-card
+            entity: water_heater.dhw_controller
+            title: House Hot Water
+            icon: mdi:water-boiler
+            kind: dhw
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: House Zones
+            heading_style: title
+          - type: custom:evohome-zone-card
+            entity: climate.living
+            name: Living Room
+            icon: mdi:sofa
+          - type: custom:evohome-zone-card
+            entity: climate.kitchen
+            name: Kitchen
+            icon: mdi:countertop
+          - type: custom:evohome-zone-card
+            entity: climate.dining_room
+            name: Dining Room
+            icon: mdi:silverware-fork-knife
+          - type: custom:evohome-zone-card
+            entity: climate.snug_hall
+            name: Snug / Hall
+            icon: mdi:fireplace
+          - type: custom:evohome-zone-card
+            entity: climate.ben_office
+            name: Ben Office
+            icon: mdi:desk
+          - type: custom:evohome-zone-card
+            entity: climate.offices
+            name: Sam Office
+            icon: mdi:laptop
+          - type: custom:evohome-zone-card
+            entity: climate.master_bed
+            name: Master Bedroom
+            icon: mdi:bed-king
+          - type: custom:evohome-zone-card
+            entity: climate.bedroom_2
+            name: Bedroom 2
+            icon: mdi:bed
+          - type: custom:evohome-zone-card
+            entity: climate.bedroom_3
+            name: Bedroom 3
+            icon: mdi:bed-single
+          - type: custom:evohome-zone-card
+            entity: climate.bathrooms
+            name: Bathrooms
+            icon: mdi:shower
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Controller Schedules
+            heading_style: title
+          - type: custom:evohome-schedule-card
+            title: House Evohome Schedules
+            entities:
+              - entity: climate.living
+                name: Living Room
+              - entity: climate.kitchen
+                name: Kitchen
+              - entity: climate.dining_room
+                name: Dining Room
+              - entity: climate.snug_hall
+                name: Snug / Hall
+              - entity: climate.ben_office
+                name: Ben Office
+              - entity: climate.offices
+                name: Sam Office
+              - entity: climate.master_bed
+                name: Master Bedroom
+              - entity: climate.bedroom_2
+                name: Bedroom 2
+              - entity: climate.bedroom_3
+                name: Bedroom 3
+              - entity: climate.bathrooms
+                name: Bathrooms
+              - entity: water_heater.dhw_controller
+                name: House Hot Water
+
+  - title: Barn Evohome
+    path: barn-evohome
+    icon: mdi:barn
+    type: sections
+    max_columns: 4
+    badges: []
+    sections:
+      - type: grid
+        column_span: 1
+        cards:
+          - type: custom:evohome-mode-card
+            entity: climate.bank_farm_barn
+            title: Barn Evohome
+            icon: mdi:barn
+            kind: system
+            use_preset_fallback: true
+          - type: custom:evohome-mode-card
+            entity: water_heater.domestic_hot_water_2
+            title: Barn Hot Water
+            icon: mdi:water-boiler
+            kind: dhw
+      - type: grid
+        column_span: 1
+        cards:
+          - type: heading
+            heading: Barn Zones
+            heading_style: title
+          - type: custom:evohome-zone-card
+            entity: climate.living_2
+            name: Living Room
+            icon: mdi:sofa
+          - type: custom:evohome-zone-card
+            entity: climate.kitchen_2
+            name: Kitchen
+            icon: mdi:countertop
+          - type: custom:evohome-zone-card
+            entity: climate.utility_2
+            name: Utility
+            icon: mdi:washing-machine
+          - type: custom:evohome-zone-card
+            entity: climate.entrance_2
+            name: Entrance
+            icon: mdi:door-open
+          - type: custom:evohome-zone-card
+            entity: climate.landing_2
+            name: Landing
+            icon: mdi:stairs
+          - type: custom:evohome-zone-card
+            entity: climate.bathrooms_2
+            name: Bathrooms
+            icon: mdi:shower
+          - type: custom:evohome-zone-card
+            entity: climate.bedroom_1_2
+            name: Bedroom 1
+            icon: mdi:bed-king
+          - type: custom:evohome-zone-card
+            entity: climate.bedroom_2_2
+            name: Bedroom 2
+            icon: mdi:bed
+          - type: custom:evohome-zone-card
+            entity: climate.bedroom_3_2
+            name: Bedroom 3
+            icon: mdi:bed-single
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Barn Controller Schedules
+            heading_style: title
+          - type: custom:evohome-schedule-card
+            title: Barn Evohome Schedules
+            entities:
+              - entity: climate.living_2
+                name: Living Room
+              - entity: climate.kitchen_2
+                name: Kitchen
+              - entity: climate.utility_2
+                name: Utility
+              - entity: climate.entrance_2
+                name: Entrance
+              - entity: climate.landing_2
+                name: Landing
+              - entity: climate.bathrooms_2
+                name: Bathrooms
+              - entity: climate.bedroom_1_2
+                name: Bedroom 1
+              - entity: climate.bedroom_2_2
+                name: Bedroom 2
+              - entity: climate.bedroom_3_2
+                name: Bedroom 3
+              - entity: water_heater.domestic_hot_water_2
+                name: Barn Hot Water

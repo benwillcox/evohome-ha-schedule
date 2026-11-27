@@ -1,0 +1,33 @@
+get_schedule:
+  name: Get Evohome Controller Schedule
+  description: Fetches the live 7-day schedule stored inside the physical Evohome controller for a zone or DHW entity.
+  fields:
+    entity_id:
+      name: Entity
+      description: Climate zone or water_heater DHW entity.
+      required: true
+      selector:
+        entity:
+          domain:
+            - climate
+            - water_heater
+
+set_schedule:
+  name: Set Evohome Controller Schedule
+  description: Writes a 7-day schedule directly into the physical Evohome controller.
+  fields:
+    entity_id:
+      name: Entity
+      description: Climate zone or water_heater DHW entity.
+      required: true
+      selector:
+        entity:
+          domain:
+            - climate
+            - water_heater
+    days:
+      name: Days Schedule
+      description: Dictionary mapping Monday..Sunday to lists of switchpoints.
+      required: true
+      selector:
+        object:
