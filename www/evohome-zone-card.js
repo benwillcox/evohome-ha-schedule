@@ -38,9 +38,63 @@ class EvohomeZoneCard extends HTMLElement {
     const st = this._hass?.states?.[this._config.entity];
     const currentTemp = st?.attributes?.current_temperature;
     const targetTemp = st?.attributes?.temperature;
+    const hvacMode = String(st?.state || "heat").toLowerCase();
     const presetMode = String(st?.attributes?.preset_mode || "none").toLowerCase();
+    const activeFaults = st?.attributes?.status?.active_faults || [];
+    const setpoints = st?.attributes?.status?.setpoints || {};
+    const thisSpTemp = setpoints.this_sp_temp ?? null;
+    const nextSpTemp = setpoints.next_sp_temp ?? null;
+    const nextSpFrom = setpoints.next_sp_from ?? null;
     const name = this._config.name || st?.attributes?.friendly_name || this._config.entity;
-    return { currentTemp, targetTemp, presetMode, name };
+    return {
+      currentTemp,
+      targetTemp,
+      hvacMode,
+      presetMode,
+      activeFaults,
+      thisSpTemp,
+      nextSpTemp,
+      nextSpFrom,
+      name,
+    };
+  }
+
+  _getStatusOverlay(server, effectivePreset) {
+    if (Array.isArray(server.activeFaults) && server.activeFaults.length > 0) {
+      const faultType = server.activeFaults[0]?.faultType || "Controller fault";
+      return { icon: "mdi:alert-circle", bg: "#e53935", title: faultType };
+    }
+    if (server.hvacMode === "off") {
+      return { icon: "mdi:snowflake", bg: "#1e88e5", title: "Heating Off (Frost Protection)" };
+    }
+    if (effectivePreset === "eco") {
+      return { icon: "mdi:leaf", bg: "#5aa632", title: "Eco Mode (-3°C)" };
+    }
+    if (effectivePreset === "away") {
+      return { icon: "mdi:bag-suitcase", bg: "#fb8c00", title: "Away Setback" };
+    }
+    if (effectivePreset === "temporary" || effectivePreset === "permanent") {
+      return {
+        icon: "mdi:hand-pointing-up",
+        bg: "#039be5",
+        title: effectivePreset === "permanent" ? "Permanent Hold" : "Temporary Override",
+      };
+    }
+    if (
+      effectivePreset === "none" &&
+      server.targetTemp != null &&
+      server.thisSpTemp != null &&
+      server.nextSpTemp != null &&
+      Number(server.targetTemp) === Number(server.nextSpTemp) &&
+      Number(server.thisSpTemp) !== Number(server.nextSpTemp)
+    ) {
+      return {
+        icon: "mdi:trending-up",
+        bg: "#ff6f00",
+        title: `Optimum Start (Pre-heating to ${Number(server.nextSpTemp).toFixed(1)}°C)`,
+      };
+    }
+    return null;
   }
 
   _syncOptimisticWithState() {
@@ -145,6 +199,7 @@ class EvohomeZoneCard extends HTMLElement {
     const hasOverride = presetMode === "temporary" || presetMode === "permanent";
     const showPerm = presetMode === "temporary";
     const isPending = Boolean(this._optimistic);
+    const overlay = this._getStatusOverlay(server, presetMode);
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -164,8 +219,14 @@ class EvohomeZoneCard extends HTMLElement {
         .zone-info {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 9px;
           min-width: 0;
+        }
+        .badge-wrap {
+          position: relative;
+          width: 30px;
+          height: 30px;
+          flex-shrink: 0;
         }
         .badge {
           width: 30px;
@@ -176,7 +237,20 @@ class EvohomeZoneCard extends HTMLElement {
           justify-content: center;
           background: rgba(255, 111, 0, 0.16);
           color: #ff6f00;
-          flex-shrink: 0;
+        }
+        .status-overlay {
+          position: absolute;
+          right: -3px;
+          bottom: -3px;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #ffffff;
+          border: 1.5px solid var(--card-background-color, #1c1c1c);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
         }
         .title {
           font-size: 0.92rem;
@@ -267,8 +341,17 @@ class EvohomeZoneCard extends HTMLElement {
       <ha-card>
         <div class="top-row">
           <div class="zone-info">
-            <div class="badge">
-              <ha-icon icon="${this._config.icon}" style="--mdc-icon-size: 17px;"></ha-icon>
+            <div class="badge-wrap" title="${overlay ? overlay.title : "Following Schedule"}">
+              <div class="badge">
+                <ha-icon icon="${this._config.icon}" style="--mdc-icon-size: 17px;"></ha-icon>
+              </div>
+              ${
+                overlay
+                  ? `<div class="status-overlay" style="background:${overlay.bg};">
+                      <ha-icon icon="${overlay.icon}" style="--mdc-icon-size: 10px;"></ha-icon>
+                    </div>`
+                  : ""
+              }
             </div>
             <div>
               <div class="title">${server.name}</div>
@@ -333,5 +416,5 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: "evohome-zone-card",
   name: "Evohome Zone Card",
-  description: "Compact Evohome zone card with inside override chips and optimistic rollback",
+  description: "Compact Evohome zone card with controller status overlay badges, override chips, and optimistic rollback",
 });
