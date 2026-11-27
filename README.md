@@ -35,21 +35,8 @@ Native Home Assistant backend integration and custom Lovelace cards for Honeywel
 2. Add `evohome_schedules:` to `/config/configuration.yaml`.
 3. Copy `www/evohome-mode-card.js`, `www/evohome-zone-card.js`, and `www/evohome-schedule-card.js` into `/config/www/`.
 4. In Home Assistant, go to **Settings -> Dashboards -> Three Dots (top right) -> Resources -> Add Resource** and register each file as a **JavaScript Module**:
-   - `/local/evohome-mode-card.js?v=4`
-   - `/local/evohome-zone-card.js?v=1`
-   - `/local/evohome-schedule-card.js?v=4`
+   - `/local/evohome-mode-card.js`
+   - `/local/evohome-zone-card.js`
+   - `/local/evohome-schedule-card.js`
 5. Restart Home Assistant (**Developer Tools -> YAML -> Restart -> Restart Home Assistant**) and hard-refresh your browser (`Ctrl + F5` or `Cmd + Shift + R`).
 6. Use `examples/sample-evohome-views.yaml` as a reference for your dashboard views and replace the entity IDs with yours.
-
----
-
-## Initializing as a Git Repository
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: Evohome native schedule manager and cards"
-git branch -M main
-git remote add origin <YOUR_GIT_REMOTE_URL>
-git push -u origin main
-```
